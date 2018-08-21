@@ -1,7 +1,21 @@
+from tweepy import API
+from tweepy import Cursor
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import StreamListener
 import twitter_credentials
+
+
+class TwitterClient():
+    def __init__(self):
+        self.auth = TwitterAuthenticator().authenticate_twitter_app()
+        self.twitter_client = API(self.auth)
+
+    def get_tweets(self, num_tweets):
+        tweets = []
+        for tweet in Cursor(self.twitter_client.user_timelime).items(num_tweets):
+            tweets.append(tweet)
+        return tweets
 
 
 class TwitterAuthenticator():
@@ -57,6 +71,7 @@ if __name__ == '__main__':
 
     hash_tag_list = ['KenyanTraffic', 'Nairobi', 'Thika']
     fetched_tweets_filename = 'tweets.txt'
-
-    twitter_streamer = TwitterStreamer()
-    twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list)
+    twitter_client = TwitterClient()
+    print(twitter_client.get_user_timeline_tweets(2))
+#    twitter_streamer = TwitterStreamer()
+#    twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list)
