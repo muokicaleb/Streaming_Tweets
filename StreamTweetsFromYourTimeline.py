@@ -40,3 +40,4 @@ class TwitterClient():
 if __name__ == '__main__':
     twitter_client = TwitterClient('muoki_caleb')
     print(twitter_client.get_user_timeline_tweets(1))
+    # print(twitter_client.get_friend_list(2))
