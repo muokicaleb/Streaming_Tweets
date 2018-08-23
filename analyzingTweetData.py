@@ -40,9 +40,7 @@ if __name__ == '__main__':
 
     twitter_client = TwitterClient()
     tweet_analyzer = TweetAnalyzer()
-
     api = twitter_client.get_twitter_client_api()
-
     tweets = api.user_timeline(screen_name="muoki_caleb", count=100)
     df = tweet_analyzer.tweets_to_data_frame(tweets)
     df.to_csv('output.csv', sep='\t', encoding='utf-8')
