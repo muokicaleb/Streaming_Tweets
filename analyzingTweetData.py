@@ -24,10 +24,6 @@ class TwitterClient():
 
 
 class TweetAnalyzer():
-    """
-    Functionality for analyzing and categorizing content from tweets.
-    """
-
     def tweets_to_data_frame(self, tweets):
         df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
         df['id'] = np.array([tweet.id for tweet in tweets])
@@ -47,8 +43,7 @@ if __name__ == '__main__':
 
     api = twitter_client.get_twitter_client_api()
 
-    tweets = api.user_timeline(screen_name="muoki_caleb", count=20)
-
+    tweets = api.user_timeline(screen_name="muoki_caleb", count=100)
     df = tweet_analyzer.tweets_to_data_frame(tweets)
-
-    print(df.head(20))
+    df.to_csv('output.csv', sep='\t', encoding='utf-8')
+    print(df)
