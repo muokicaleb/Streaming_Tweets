@@ -1,7 +1,9 @@
-import numpy as np
-import pandas as pd
+import csv
 from tweepy import API
+from tweepy import Cursor
 from tweepy import OAuthHandler
+import time
+from tweepy import TweepError
 import twitter_credentials
 
 
@@ -15,29 +17,34 @@ class TwitterAuthenticator():
 class TwitterClient():
     def __init__(self, twitter_user=None):
         self.auth = TwitterAuthenticator().authenticate_twitter_app()
-        self.twitter_client = API(self.auth)
+        self.twitter_client = API(self.auth, wait_on_rate_limit=True)
         self.twitter_user = twitter_user
 
     def get_twitter_client_api(self):
         return self.twitter_client
 
 
-class FollowerAnalyzer():
-    def tweets_to_data_frame(self, followers):
-        df = pd.DataFrame(data=[follower.name for follower in followers], columns=['Followers'])
-        df['ScreenName'] = np.array([follower.screen_name for follower in followers])
-        df['NumberFollowers'] = np.array([follower.followers_count for follower in followers])
-        df['id'] = np.array([follower.id for follower in followers])
-        df['statusesCount'] = np.array([follower.statuses_count for follower in followers])
-        df['profileImageURL'] = np.array([follower.profile_image_url for follower in followers])
-        return df
-
-
 if __name__ == '__main__':
     twitter_client = TwitterClient()
-    follower_analyzer = FollowerAnalyzer()
+
     api = twitter_client.get_twitter_client_api()
-    followers = api.followers(screen_name="muoki_caleb", count=200)
-    df = follower_analyzer.tweets_to_data_frame(followers)
-    df.to_csv('FollowerOutput.csv', sep='\t', encoding='utf-8')
+
+    Output_file = csv.writer(open('followers_python.csv', 'w'))
+    Output_file.writerow(['Name', 'ScreenName', "NumberFollowers", "id", "statusesCount", "profileImageURL"])
+
+    followers = Cursor(api.followers, screen_name="muoki_caleb", count=200).items()
+
+    while True:
+        try:
+            follower = next(followers)
+        except TweepError:
+            time.sleep(60 * 15)
+            follower = next(followers)
+        except StopIteration:
+            break
+
+        Output_file.writerow([follower.name, follower.screen_name,
+                              follower.followers_count, follower.id,
+                              follower.statuses_count, follower.profile_image_url])
+
     print("done")
