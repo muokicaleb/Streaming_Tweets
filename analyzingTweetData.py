@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from tweepy import API
-from tweepy import Cursor
 from tweepy import OAuthHandler
 import twitter_credentials
 
@@ -38,10 +37,20 @@ class TweetAnalyzer():
 
 if __name__ == '__main__':
 
+    # creating 2 objects of class Twitterclient and tweetAnalyzer
     twitter_client = TwitterClient()
     tweet_analyzer = TweetAnalyzer()
+
     api = twitter_client.get_twitter_client_api()
+
+    # collecting the first 100 tweets by muoki_caleb
     tweets = api.user_timeline(screen_name="muoki_caleb", count=100)
+
+    # feeding the data into a dataframe
     df = tweet_analyzer.tweets_to_data_frame(tweets)
+
+    # storing the dataframe in a csv file that can later be used for analaysis
     df.to_csv('output.csv', sep='\t', encoding='utf-8')
+
+    # printing the dataframe on the screen
     print(df)
