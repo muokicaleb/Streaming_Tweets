@@ -37,7 +37,7 @@ if __name__ == '__main__':
     twitter_client = TwitterClient()
     follower_analyzer = FollowerAnalyzer()
     api = twitter_client.get_twitter_client_api()
-    followers = api.followers(screen_name="muoki_caleb")
+    followers = api.followers(screen_name="muoki_caleb", count=200)
     df = follower_analyzer.tweets_to_data_frame(followers)
     df.to_csv('FollowerOutput.csv', sep='\t', encoding='utf-8')
     print("done")
