@@ -25,25 +25,19 @@ class TwitterClient():
 class FollowerAnalyzer():
     def tweets_to_data_frame(self, followers):
         df = pd.DataFrame(data=[follower.name for follower in followers], columns=['Followers'])
-        '''df['id'] = np.array([tweet.id for tweet in tweets])
-        df['len'] = np.array([len(tweet.text) for tweet in tweets])
-        df['date'] = np.array([tweet.created_at for tweet in tweets])
-        df['source'] = np.array([tweet.source for tweet in tweets])
-        df['likes'] = np.array([tweet.favorite_count for tweet in tweets])
-        df['retweets'] = np.array([tweet.retweet_count for tweet in tweets])
-'''
+        df['ScreenName'] = np.array([follower.screen_name for follower in followers])
+        df['NumberFollowers'] = np.array([follower.followers_count for follower in followers])
+        df['id'] = np.array([follower.id for follower in followers])
+        df['statusesCount'] = np.array([follower.statuses_count for follower in followers])
+        df['profileImageURL'] = np.array([follower.profile_image_url for follower in followers])
         return df
 
 
 if __name__ == '__main__':
-
-    # creating 2 objects of class Twitterclient and tweetAnalyzer
     twitter_client = TwitterClient()
     follower_analyzer = FollowerAnalyzer()
-
     api = twitter_client.get_twitter_client_api()
-
     followers = api.followers(screen_name="muoki_caleb")
     df = follower_analyzer.tweets_to_data_frame(followers)
-    print(df.head(10))
-    # print(friends)
+    df.to_csv('FollowerOutput.csv', sep='\t', encoding='utf-8')
+    print("done")
