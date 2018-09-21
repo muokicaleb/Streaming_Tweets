@@ -6,6 +6,8 @@ import time
 from tweepy import TweepError
 import twitter_credentials
 
+# twitter credentials are in twitter_credentials.
+# a better way is setting them as environment variables then import OS
 
 class TwitterAuthenticator():
     def authenticate_twitter_app(self):
